@@ -4,34 +4,56 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
+
+	velocity "c/_DEV/GitHub/koho/velocitylimit"
 )
 
+type response struct {
+	ID         string `json:"id"`
+	CustomerID string `json:"customer_id"`
+	Accepted   bool   `json:"accepted"`
+}
+
 /**
- *
+ * main
+ *	- parses an input file for data
+ *	- encodes each line as json request
+ *	- each request is run through business logic via velocitylimit package
+ *	- each request is assessed as pass or fail to be ingested to the system
  */
 func main() {
-	// parse through the text file
+	// open file for reading
 	file, _ := os.Open("input.txt")
-
+	// read the file
 	scanner := bufio.NewScanner(file)
+	// create file for writing
+	f, err := os.Create("data.txt")
+	if err != nil {
+		panic(err)
+	}
 
+	// parse through the input file
 	for scanner.Scan() {
-		fmt.Println(scanner.Text()) // Println will add back the final '\n'
+		readLine := scanner.Text() // read the line
+
+		// apply velocity limit check
+		if transaction := velocity.Limit(readLine); transaction != "" {
+			w := bufio.NewWriter(f)                    // buffer for writing to file
+			strTrx := []string{transaction, "\n"}      // append new line character
+			strTransaction := strings.Join(strTrx, "") // concatenate the string
+			_, err2 := w.WriteString(strTransaction)   // write line to file
+			if err2 != nil {
+				panic(err2)
+			}
+
+			w.Flush() // clear buffer
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
 	}
 
-	//var data = Customers{}
-
-	//_ = json.Unmarshal([]byte(file), &data)
-
-	// for i := 0; i < len(data.Customers); i++ {
-	// 	fmt.Println("Id: ", data.Customers[i].Id)
-	// 	fmt.Println("Customer_id: ", data.Customers[i].Customer_id)
-	// 	fmt.Println("Time: ", data.Customers[i].Time)
-	// }
-
-	// check based on business rule
-	// output response to server
+	defer f.Close()
+	file.Close()
 }
