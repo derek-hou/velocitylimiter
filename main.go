@@ -9,19 +9,11 @@ import (
 	velocity "c/_DEV/GitHub/koho/velocitylimit"
 )
 
-type response struct {
-	ID         string `json:"id"`
-	CustomerID string `json:"customer_id"`
-	Accepted   bool   `json:"accepted"`
-}
-
-/**
- * main
- *	- parses an input file for data
- *	- encodes each line as json request
- *	- each request is run through business logic via velocitylimit package
- *	- each request is assessed as pass or fail to be ingested to the system
- */
+// main
+// - parses an input file for data
+// - encodes each line as json request
+// - each request is run through business logic via velocitylimit package
+// - each request is assessed as pass or fail to be ingested to the system
 func main() {
 	// open file for reading
 	file, _ := os.Open("input.txt")
@@ -54,6 +46,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
 	}
 
-	defer f.Close()
-	file.Close()
+	// close files
+	defer f.Close() // close write file
+	file.Close()    // close read file
 }
