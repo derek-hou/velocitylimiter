@@ -1,3 +1,6 @@
+## Background 
+I wrote this technical test for a job application. I learned enough Golang in a weekend to build out the requirements.
+
 In finance, it's common for accounts to have so-called "velocity limits". In this task, you'll write a program that accepts or declines attempts to load funds into customers' accounts in real-time.
 
 Each attempt to load funds will come as a single-line JSON payload, structured as follows:

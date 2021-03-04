@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	velocity "c/_DEV/GitHub/koho/velocitylimit"
+	velocity "velocitylimiter/velocitylimit"
 )
 
 // main
